@@ -49,6 +49,53 @@ function handleKeyPress(e) {
     return;
   }
 }
+function evaluate(e) {
+  const key = e.target.dataset.key;
+  const lastChar = operation[operation.length - 1];
+
+  if (key === "=" && operators.indexOf(lastChar) !== -1) {
+    operation = operation.slice(0, -1);
+  }
+
+  if (operation.length === 0) {
+    answer = "";
+    result = answer;
+    return;
+  }
+
+  try {
+
+    const final = operation.replace(/x/g, "*").replace(/÷/g, "/");
+
+    // Handle division by zero
+    if (final.includes("/0")) {
+      answer = "undefined";
+    } else {
+      answer = eval(final); // Evaluate the mathematical expression
+    }
+
+    if (key === "=") {
+      decimalAdded = false;
+      operation = `${answer}`;
+      if (answer === "undefined") {
+        result= answer;
+      } else {
+        result= "";
+      }
+      input.innerHTML = operation;
+      return;
+    }
+
+    result= answer;
+  } catch (e) {
+    if (key === "=") {
+      decimalAdded = false;
+      // input.innerHTML = `<span class="error">${operation}</span>`;
+      input.innerHTML = `<span class="error">Bad Expression</span>`;
+    }
+    console.log(e);
+  }
+}
 
 function clearInput() {
   operation = "";
